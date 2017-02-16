@@ -1,0 +1,5 @@
+group: "jessitron"
+artifact: "microlib-TreeNodePrinter"
+version: "0.1.0"
+requires: "[0.11.0,1.0.0)"
+dependencies:
