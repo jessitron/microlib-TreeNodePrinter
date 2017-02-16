@@ -3,12 +3,34 @@
 editor BringIn
 
 @displayName "My Value"
-@description "a single parameter to this editor"
-@validInput "free text"
-param my_value: @any
+@description "package to put the file in"
+@validInput "java package"
+param package: @java_package
 
-let fileContents = "Hello, world!"
 
-/* Example showing adding one file */
-with Project p
-  do addFile "hello.txt" fileContents
+MoveScalaFile existing_file="src/main/scala/yourpackagehere/TreeNodePrinter.scala", replace_path_component="yourpackagehere"
+MoveScalaFile existing_file="src/test/scala/yourpackagehere/TreeNodePrinterTest.scala", replace_path_component="yourpackagehere"
+
+editor MoveScalaFile
+
+param existing_file: @any
+
+param package: @java_package
+
+param replace_path_component: @any
+
+let new_filepath = {
+    var newPackagePortion = package.replaceAll("\\.","/");
+    return existing_file.replace(replace_path_component, newPackagePortion);
+ }
+
+# TODO: skip if existing == new
+with Project p begin
+  do eval { print("MOVING " + existing_file + " to " + new_filepath)}
+  do copyEditorBackingFileOrFail existing_file new_filepath
+  do deleteFile existing_file
+  with File when path = new_filepath and begin
+    do eval { print("changing package to " + package) }
+    do regexpReplace "package .*" { "package " + package }
+  end
+end

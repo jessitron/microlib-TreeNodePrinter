@@ -1,20 +1,17 @@
 scenario BringIn should do something amazing for developers
 
-let my_value = "Hello"
-
-let sample_output_file = "hello.txt"
+let output_scala="src/main/scala/com/jessitron/woot/TreeNodePrinter.scala"
+let output_test="src/test/scala/com/jessitron/woot/TreeNodePrinterTest.scala"
 
 given
-  /* Selects the current project and its source files
-     as an initial point for then applying your editor
-  */
   ArchiveRoot
 
 when
   /* Run your editor */
-  BringIn
+  BringIn package="com.jessitron.woot"
 
 then
-  /* Assert Something important that your editor did */
-  fileExists sample_output_file
-    and fileContains sample_output_file my_value
+   fileExists output_scala
+    and fileContains output_scala "package com.jessitron.woot"
+  and fileExists output_test
+     and fileContains output_test "package com.jessitron.woot"
